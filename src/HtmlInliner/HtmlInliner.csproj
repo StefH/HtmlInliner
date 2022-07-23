@@ -16,6 +16,7 @@
         <PackageReleaseNotes />
         <LangVersion>10</LangVersion>
         <Nullable>enable</Nullable>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
