@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+        <Version>0.0.1-preview-01</Version>
+        <LangVersion></LangVersion>
+        <Authors>Stef Heyenrath</Authors>
+        <Product>HtmlInliner</Product>
+        <Title>HtmlInliner</Title>
+        <Description></Description>
+        <PackageProjectUrl>https://github.com/StefH/HtmlInliner</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/StefH/HtmlInliner</RepositoryUrl>
+        <RepositoryType>Github</RepositoryType>
+        <PackageTags>Html Inline Package</PackageTags>
+        <Copyright>© Stef Heyenrath + Rick Strahl</Copyright>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageReleaseNotes />
+        <LangVersion>10</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
+        <PackageReference Include="Stef.Validation" Version="0.1.0" />
+    </ItemGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+</Project>

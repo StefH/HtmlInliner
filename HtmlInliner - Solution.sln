@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{719FA7E6-B8BD-4EA4-8B7E-D91A551D4B5A}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B80974ED-2352-4E02-8C80-3AE3645C2260}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlInliner", "src\HtmlInliner\HtmlInliner.csproj", "{25FD31F4-853E-4286-BB36-E5B60431A198}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{9C998EEF-5969-45FF-AF7F-20E9B7B3D01B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlInlinerConsoleApp", "examples\HtmlInlinerConsoleApp\HtmlInlinerConsoleApp.csproj", "{5C3E6001-A17F-4B7B-9735-3EC830DA34B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25FD31F4-853E-4286-BB36-E5B60431A198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25FD31F4-853E-4286-BB36-E5B60431A198}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25FD31F4-853E-4286-BB36-E5B60431A198}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25FD31F4-853E-4286-BB36-E5B60431A198}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C3E6001-A17F-4B7B-9735-3EC830DA34B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C3E6001-A17F-4B7B-9735-3EC830DA34B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C3E6001-A17F-4B7B-9735-3EC830DA34B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C3E6001-A17F-4B7B-9735-3EC830DA34B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{25FD31F4-853E-4286-BB36-E5B60431A198} = {B80974ED-2352-4E02-8C80-3AE3645C2260}
+		{5C3E6001-A17F-4B7B-9735-3EC830DA34B0} = {9C998EEF-5969-45FF-AF7F-20E9B7B3D01B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C9C9A2D6-677C-464A-9DA2-142C513E639A}
+	EndGlobalSection
+EndGlobal
