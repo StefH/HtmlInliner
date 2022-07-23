@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stef.Validation;
 
 namespace HtmlInliner;
 
@@ -754,18 +755,14 @@ internal static class MimeTypeMap
     }
 
     /// <summary>
-    /// Tries to get the type of the MIME from the provided string.
+    /// Tries to get the MIME-type from the provided string.
     /// </summary>
     /// <param name="str">The filename or extension.</param>
     /// <param name="mimeType">The variable to store the MIME type.</param>
-    /// <returns>The MIME type.</returns>
-    /// <exception cref="ArgumentNullException" />
-    public static bool TryGetMimeType(string? str, out string mimeType)
+    /// <returns><c>true</c> if a match was found</returns>
+    public static bool TryGetMimeType(string str, out string mimeType)
     {
-        if (str == null)
-        {
-            throw new ArgumentNullException(nameof(str));
-        }
+        Guard.NotNullOrEmpty(str);
 
         var indexQuestionMark = str.IndexOf(QuestionMark, StringComparison.Ordinal);
         if (indexQuestionMark != -1)
