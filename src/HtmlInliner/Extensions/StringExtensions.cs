@@ -8,4 +8,14 @@ internal static class StringExtensions
     {
         return source?.IndexOf(toCheck, stringComparison) >= 0;
     }
+
+    public static bool IsHttp(this string? url)
+    {
+        return url is not null && url.StartsWith("http", StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public static bool IsFile(this string? url)
+    {
+        return url is not null && url.StartsWith("file:///", StringComparison.InvariantCultureIgnoreCase);
+    }
 }

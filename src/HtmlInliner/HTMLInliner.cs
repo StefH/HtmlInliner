@@ -14,6 +14,7 @@ namespace HtmlInliner;
 /// </summary>
 public class HTMLInliner : IHTMLInliner
 {
+    private const string DefaultContentType = "application/image";
     private static readonly Regex UrlRegEx = new("url\\(.*?\\)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
     /// <inheritdoc />
@@ -24,7 +25,7 @@ public class HTMLInliner : IHTMLInliner
         Uri baseUri;
         HtmlDocument doc;
 
-        if (urlOrFileOrHtmlText.StartsWith("http", StringComparison.InvariantCultureIgnoreCase) && urlOrFileOrHtmlText.Contains("://"))
+        if (urlOrFileOrHtmlText.IsHttp() && urlOrFileOrHtmlText.Contains("://"))
         {
             baseUri = new Uri(urlOrFileOrHtmlText);
 
@@ -135,7 +136,7 @@ public class HTMLInliner : IHTMLInliner
             }
 
             string cssText;
-            if (url.StartsWith("http"))
+            if (url.IsHttp())
             {
                 using var http = new WebClient();
                 cssText = http.DownloadString(url);
@@ -191,12 +192,12 @@ public class HTMLInliner : IHTMLInliner
             }
 
             byte[] scriptData;
-            if (url.StartsWith("http"))
+            if (url.IsHttp())
             {
                 using var http = new WebClient();
                 scriptData = http.DownloadData(url);
             }
-            else if (url.StartsWith("file:///"))
+            else if (url.IsFile())
             {
                 url = url.Substring(8);
                 scriptData = File.ReadAllBytes(WebUtility.UrlDecode(url));
@@ -267,13 +268,13 @@ public class HTMLInliner : IHTMLInliner
             byte[] imageData;
             string contentType;
 
-            if (url.StartsWith("http"))
+            if (url.IsHttp())
             {
                 using var http = new WebClient();
                 imageData = http.DownloadData(url);
                 contentType = http.ResponseHeaders[HttpResponseHeader.ContentType];
             }
-            else if (url.StartsWith("file:///"))
+            else if (url.IsFile())
             {
                 url = url.Substring(8);
 
@@ -294,14 +295,14 @@ public class HTMLInliner : IHTMLInliner
                     var origUri = Append(baseUri, url);
                     url = origUri.AbsoluteUri;
 
-                    if (url.StartsWith("http") && url.Contains("://"))
+                    if (url.IsHttp() && url.Contains("://"))
                     {
                         using var http = new WebClient();
                         imageData = http.DownloadData(url);
                     }
                     else
                     {
-                        imageData = File.ReadAllBytes(WebUtility.UrlDecode(url.Replace("file:///", "")));
+                        imageData = File.ReadAllBytes(WebUtility.UrlDecode(url.Replace("file:///", string.Empty)));
                     }
 
                     contentType = GetMimeTypeFromUrl(url);
@@ -379,13 +380,13 @@ public class HTMLInliner : IHTMLInliner
 
             byte[]? audioData;
             string? contentType;
-            if (url.StartsWith("http"))
+            if (url.IsHttp())
             {
                 var http = new WebClient();
                 audioData = http.DownloadData(url);
                 contentType = http.ResponseHeaders[HttpResponseHeader.ContentType];
             }
-            else if (url.StartsWith("file:///"))
+            else if (url.IsFile())
             {
                 url = url.Substring(8);
 
@@ -403,16 +404,17 @@ public class HTMLInliner : IHTMLInliner
             {
                 try
                 {
-                    var uri = new Uri(baseUri, url);
-                    url = uri.AbsoluteUri;
-                    if (url.StartsWith("http") && url.Contains("://"))
+                    var origUri = Append(baseUri, url);
+                    url = origUri.AbsoluteUri;
+
+                    if (url.IsHttp() && url.Contains("://"))
                     {
                         var http = new WebClient();
                         audioData = http.DownloadData(url);
                     }
                     else
                     {
-                        audioData = File.ReadAllBytes(WebUtility.UrlDecode(url.Replace("file:///", "")));
+                        audioData = File.ReadAllBytes(WebUtility.UrlDecode(url.Replace("file:///", string.Empty)));
                     }
 
                     contentType = GetMimeTypeFromUrl(url);
@@ -467,13 +469,13 @@ public class HTMLInliner : IHTMLInliner
 
             string? contentType;
             byte[]? linkData;
-            if (url.StartsWith("http"))
+            if (url.IsHttp())
             {
                 using var http = new WebClient();
                 linkData = http.DownloadData(url);
                 contentType = http.ResponseHeaders[HttpResponseHeader.ContentType];
             }
-            else if (url.StartsWith("file:///"))
+            else if (url.IsFile())
             {
                 var baseUriForFile = new Uri(baseUrl);
                 url = new Uri(baseUriForFile, new Uri(url)).AbsoluteUri;
@@ -481,7 +483,7 @@ public class HTMLInliner : IHTMLInliner
                 try
                 {
                     contentType = GetMimeTypeFromUrl(url);
-                    if (contentType == "application/image")
+                    if (contentType == DefaultContentType)
                     {
                         continue;
                     }
@@ -499,14 +501,15 @@ public class HTMLInliner : IHTMLInliner
                 {
                     var uri = Append(baseUri, url);
                     url = uri.AbsoluteUri;
-                    if (url.StartsWith("http") && url.Contains("://"))
+
+                    if (url.IsHttp() && url.Contains("://"))
                     {
                         using var http = new WebClient();
                         linkData = http.DownloadData(url);
                     }
                     else
                     {
-                        linkData = File.ReadAllBytes(WebUtility.UrlDecode(url.Replace("file:///", "")));
+                        linkData = File.ReadAllBytes(WebUtility.UrlDecode(url.Replace("file:///", string.Empty)));
                     }
 
                     contentType = GetMimeTypeFromUrl(url);
@@ -549,7 +552,7 @@ public class HTMLInliner : IHTMLInliner
     {
         var ext = Path.GetExtension(url).ToLower();
 
-        return MimeTypeMap.TryGetMimeType(ext, out var mime) ? mime : "application/image";
+        return MimeTypeMap.TryGetMimeType(ext, out var mime) ? mime : DefaultContentType;
     }
 
     private static Uri Append(Uri? uri, params string[] paths)
