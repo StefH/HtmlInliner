@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-        <Version>0.0.1-preview-01</Version>
+        <Version>0.0.1</Version>
         <LangVersion></LangVersion>
         <Authors>Stef Heyenrath</Authors>
         <Product>HtmlInliner</Product>
