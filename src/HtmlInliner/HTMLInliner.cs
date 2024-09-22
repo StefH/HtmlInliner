@@ -130,7 +130,7 @@ public class HTMLInliner : IHTMLInliner
             var url = link.Attributes["href"]?.Value;
             var rel = link.Attributes["rel"]?.Value;
 
-            if (url == null || rel != "stylesheet")
+            if (url == null || rel?.Contains("stylesheet") != true)
             {
                 continue;
             }
@@ -239,93 +239,99 @@ public class HTMLInliner : IHTMLInliner
             return;
         }
 
-        var images = imageNodes.Select(node => new { attr = "src", node }).ToList();
-
-        // https://www.w3schools.com/tags/att_link_rel.asp
-        var favIconNodes = doc.DocumentNode.SelectNodes("//link");
-        if (favIconNodes != null)
+        // srcset ???
+        foreach (var src in new[] { "src" })
         {
-            foreach (var favIconNode in favIconNodes)
-            {
-                var url = favIconNode.Attributes["href"]?.Value;
-                var rel = favIconNode.Attributes["rel"]?.Value;
+            var images = imageNodes
+                .Select(node => new { attr = src, node })
+                .ToList();
 
-                if (url != null && rel.Contains("icon", StringComparison.OrdinalIgnoreCase))
+            // https://www.w3schools.com/tags/att_link_rel.asp
+            var favIconNodes = doc.DocumentNode.SelectNodes("//link");
+            if (favIconNodes != null)
+            {
+                foreach (var favIconNode in favIconNodes)
                 {
-                    images.Add(new { attr = "href", node = favIconNode });
+                    var url = favIconNode.Attributes["href"]?.Value;
+                    var rel = favIconNode.Attributes["rel"]?.Value;
+
+                    if (url != null && rel.Contains("icon", StringComparison.OrdinalIgnoreCase))
+                    {
+                        images.Add(new { attr = "href", node = favIconNode });
+                    }
                 }
             }
-        }
 
-        foreach (var image in images)
-        {
-            var url = image.node.Attributes[image.attr]?.Value;
-            if (url == null)
+            foreach (var image in images)
             {
-                continue;
-            }
-
-            byte[] imageData;
-            string contentType;
-
-            if (url.IsHttp())
-            {
-                using var http = new WebClient();
-                imageData = http.DownloadData(url);
-                contentType = http.ResponseHeaders[HttpResponseHeader.ContentType];
-            }
-            else if (url.IsFile())
-            {
-                url = url.Substring(8);
-
-                try
-                {
-                    imageData = File.ReadAllBytes(url);
-                    contentType = GetMimeTypeFromUrl(url);
-                }
-                catch
+                var url = image.node.Attributes[image.attr]?.Value;
+                if (url == null)
                 {
                     continue;
                 }
-            }
-            else // Relative Path
-            {
-                try
+
+                byte[] imageData;
+                string contentType;
+
+                if (url.IsHttp())
                 {
-                    var origUri = Append(baseUri, url);
-                    url = origUri.AbsoluteUri;
-
-                    if (url.IsHttp() && url.Contains("://"))
-                    {
-                        using var http = new WebClient();
-                        imageData = http.DownloadData(url);
-                    }
-                    else
-                    {
-                        imageData = File.ReadAllBytes(WebUtility.UrlDecode(url.Replace("file:///", string.Empty)));
-                    }
-
-                    contentType = GetMimeTypeFromUrl(url);
+                    using var http = new WebClient();
+                    imageData = http.DownloadData(url);
+                    contentType = http.ResponseHeaders[HttpResponseHeader.ContentType];
                 }
-                catch
+                else if (url.IsFile())
+                {
+                    url = url.Substring(8);
+
+                    try
+                    {
+                        imageData = File.ReadAllBytes(url);
+                        contentType = GetMimeTypeFromUrl(url);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                else // Relative Path
+                {
+                    try
+                    {
+                        var origUri = Append(baseUri, url);
+                        url = origUri.AbsoluteUri;
+
+                        if (url.IsHttp() && url.Contains("://"))
+                        {
+                            using var http = new WebClient();
+                            imageData = http.DownloadData(url);
+                        }
+                        else
+                        {
+                            imageData = File.ReadAllBytes(WebUtility.UrlDecode(url.Replace("file:///", string.Empty)));
+                        }
+
+                        contentType = GetMimeTypeFromUrl(url);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                if (imageData == null)
                 {
                     continue;
                 }
-            }
 
-            if (imageData == null)
-            {
-                continue;
-            }
+                // Only replace the node.Name for a real image, not for an icon.
+                if (image.attr == src)
+                {
+                    image.node.Name = "img";
+                }
 
-            // Only replace the node.Name for a real image, not for an icon.
-            if (image.attr == "src")
-            {
-                image.node.Name = "img";
+                var data = $"data:{contentType};base64,{Convert.ToBase64String(imageData)}";
+                image.node.Attributes[image.attr].Value = data;
             }
-
-            var data = $"data:{contentType};base64,{Convert.ToBase64String(imageData)}";
-            image.node.Attributes[image.attr].Value = data;
         }
     }
 

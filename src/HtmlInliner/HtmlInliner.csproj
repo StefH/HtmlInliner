@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-        <Version>0.0.1</Version>
+        <Version>0.0.2</Version>
         <LangVersion></LangVersion>
         <Authors>Stef Heyenrath</Authors>
         <Product>HtmlInliner</Product>
@@ -14,7 +14,7 @@
         <Copyright>© Stef Heyenrath + Rick Strahl</Copyright>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReleaseNotes />
-        <LangVersion>10</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
