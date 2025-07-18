@@ -8,7 +8,7 @@ public interface IHTMLInliner
     /// The result is a fully self-contained HTML document. 
     /// </summary>
     /// <param name="urlOrFileOrHtmlText">A Web Url or fully qualified local file name or Html text string.</param>
-    /// <param name="basePath">
+    /// <param name="options">
     /// An optional basePath for the document which helps resolve relative
     /// paths. Unless there's a special use case, you should leave this
     /// value blank and let the default use either the value from a
@@ -17,5 +17,5 @@ public interface IHTMLInliner
     /// If the document itself contains a BASE tag this value is not used.
     /// </param>
     /// <returns>HTML string or null in case of an error.</returns>
-    string? Process(string urlOrFileOrHtmlText, string? basePath = null);
+    string? Process(string urlOrFileOrHtmlText, HTMLInlinerOptions? options);
 }

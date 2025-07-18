@@ -18,9 +18,13 @@ public class HTMLInliner : IHTMLInliner
     private static readonly Regex UrlRegEx = new("url\\(.*?\\)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
     /// <inheritdoc />
-    public string? Process(string urlOrFileOrHtmlText, string? basePath = null)
+    public string? Process(string urlOrFileOrHtmlText, HTMLInlinerOptions? options)
     {
         Guard.NotNullOrEmpty(urlOrFileOrHtmlText);
+
+        options ??= HTMLInlinerOptions.Default;
+
+        var basePath = options.BasePath;
 
         Uri baseUri;
         HtmlDocument doc;
@@ -46,14 +50,36 @@ public class HTMLInliner : IHTMLInliner
             }
             docBase?.Remove();
 
-            // Process the document to also replace inline url(...)
-            doc.LoadHtml(ProcessEmbeddedUrls(doc.Text, string.Empty, baseUri));
+            if (options.ProcessEmbeddedUrls)
+            {
+                // Process the document to also replace inline url(...)
+                doc.LoadHtml(ProcessEmbeddedUrls(doc.Text, string.Empty, baseUri));
+            }
 
-            ProcessCss(doc, baseUri);
-            ProcessScripts(doc, baseUri);
-            ProcessImages(doc, baseUri);
-            ProcessLinks(doc, baseUri);
-            ProcessAudio(doc, baseUri);
+            if (options.ProcessCss)
+            {
+                ProcessCss(doc, baseUri);
+            }
+
+            if (options.ProcessScripts)
+            {
+                ProcessScripts(doc, baseUri);
+            }
+
+            if (options.ProcessImages)
+            {
+                ProcessImages(doc, baseUri);
+            }
+
+            if (options.ProcessLinks)
+            {
+                ProcessLinks(doc, baseUri);
+            }
+
+            if (options.ProcessAudio)
+            {
+                ProcessAudio(doc, baseUri);
+            }
         }
         else
         {
@@ -98,14 +124,36 @@ public class HTMLInliner : IHTMLInliner
                 Directory.SetCurrentDirectory(basePath);
                 baseUri = new Uri(basePath);
 
-                // Process the document to also replace inline url(...)
-                doc.LoadHtml(ProcessEmbeddedUrls(doc.Text, string.Empty, baseUri));
+                if (options.ProcessEmbeddedUrls)
+                {
+                    // Process the document to also replace inline url(...)
+                    doc.LoadHtml(ProcessEmbeddedUrls(doc.Text, string.Empty, baseUri));
+                }
 
-                ProcessCss(doc, baseUri);
-                ProcessScripts(doc, baseUri);
-                ProcessImages(doc, baseUri);
-                ProcessLinks(doc, baseUri);
-                ProcessAudio(doc, baseUri);
+                if (options.ProcessCss)
+                {
+                    ProcessCss(doc, baseUri);
+                }
+
+                if (options.ProcessScripts)
+                {
+                    ProcessScripts(doc, baseUri);
+                }
+
+                if (options.ProcessImages)
+                {
+                    ProcessImages(doc, baseUri);
+                }
+
+                if (options.ProcessLinks)
+                {
+                    ProcessLinks(doc, baseUri);
+                }
+
+                if (options.ProcessAudio)
+                {
+                    ProcessAudio(doc, baseUri);
+                }
             }
             finally
             {

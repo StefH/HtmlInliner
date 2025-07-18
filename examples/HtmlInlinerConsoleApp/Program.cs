@@ -1,8 +1,11 @@
 ﻿using HtmlInliner;
 
 var htmlInliner = new HTMLInliner();
-// var googleInlined = htmlInliner.Process("https://www.google.com");
-// File.WriteAllText(@"c:\temp\web\google_inlined.htm", googleInlined);
 
-var mstackInlined = htmlInliner.Process("https://www.mstack.nl");
-File.WriteAllText(@"c:\temp\web\mstack_inlined.htm", mstackInlined);
+var emailOptions = new HTMLInlinerOptions
+{
+    BasePath = @"c:\temp",
+    ProcessImages = true
+};
+var email = htmlInliner.Process(File.ReadAllText(@"c:\temp\email.html"), emailOptions);
+File.WriteAllText(@"c:\temp\email_inlined.html", email);
